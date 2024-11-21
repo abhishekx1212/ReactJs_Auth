@@ -1,7 +1,9 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { db } from "../config/fireBaseConfig"
+import { auth, db } from "../config/fireBaseConfig"
 import { Form, Table } from 'react-bootstrap';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AddData = () => {
   const [user, setUser] = useState({});
@@ -66,6 +68,17 @@ const AddData = () => {
     }
     setUser({})
   }
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      navigate("/")
+      // You can redirect the user to a login screen or show a message
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  };
   return (
     <div>
       <div className="container py-3">
@@ -77,6 +90,7 @@ const AddData = () => {
                 <input type="text" className='form-control my-2' placeholder='Enter Password' name='password' value={user.password || ""} onChange={handleInput} />
                 <input type="submit" value={btnValue} className='btn btn-primary' />
               </Form>
+              <button onClick={handleLogout}>Logout</button>
             </div>
           </div>
           <div className="col-6">
